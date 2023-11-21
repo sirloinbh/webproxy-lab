@@ -24,11 +24,12 @@ int main(int argc, char **argv) {
   struct sockaddr_storage clientaddr;
 
   /* Check command line args */
-  if (argc != 2) {
-    fprintf(stderr, "usage: %s <port>\n", argv[0]);
-    exit(1);
-  }
+  // if (argc != 2) {
+  //   fprintf(stderr, "usage: %s <port>\n", argv[0]);
+  //   exit(1);
+  // }
 
+  argv[1] = "8080";
   listenfd = Open_listenfd(argv[1]);
   while (1) {
     clientlen = sizeof(clientaddr);
@@ -55,7 +56,7 @@ void doit(int fd)
   printf("Request headers:\n");
   printf("%s", buf);
   sscanf(buf, "%s %s %s", method, uri, version);
-  if(strcasecmp(method, "GET")) {
+  if (strcasecmp(method, "GET") || strcasecmp(method, "HEAD")) {
     clienterror(fd, method, "501", "Not implemented", "Tiny does not implement this method");
     return;
   }
@@ -162,19 +163,22 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     Munmap(srcp, filesize);
   }
 
-  void get_filetype(char *filename, char *filetype)
-  {
+void get_filetype(char *filename, char *filetype) {
     if (strstr(filename, ".html"))
-      strcpy(filetype, "text/html");
+        strcpy(filetype, "text/html");
     else if (strstr(filename, ".gif"))
-      strcpy(filetype, "image/gif");
+        strcpy(filetype, "image/gif");
     else if (strstr(filename, ".png"))
-      strcpy(filetype, "image/png");
+        strcpy(filetype, "image/png");
     else if (strstr(filename, ".jpg"))
-      strcpy(filetype, "image/jpeg");
-    else 
-      strcpy(filetype, "text/palin");
-  }
+        strcpy(filetype, "image/jpeg");
+    else if (strstr(filename, ".mpg"))
+        strcpy(filetype, "video/mpg");
+    else if (strstr(filename, ".mp4"))
+        strcpy(filetype, "video/mp4");
+    else
+        strcpy(filetype, "text/plain");
+}
 
   void serve_dynamic(int fd, char *filename, char *cgiargs)
   {
