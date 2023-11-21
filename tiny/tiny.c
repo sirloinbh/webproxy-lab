@@ -93,7 +93,7 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
   sprintf(body, "%s<p>%s: %s\r\n", body, longmsg, cause);
   sprintf(body, "%s<hr><em>The Tiny Web server</em>\r\n", body);
 
-  printf(buf, "HTTP/1.0 %s %s\r\n", errnum, shortmsg);
+  sprintf(buf, "HTTP/1.0 %s %s\r\n", errnum, shortmsg);
   Rio_writen(fd, buf, strlen(buf));
   sprintf(buf, "Content-type: text/html\r\n");
   Rio_writen(fd, buf, strlen(buf));
@@ -128,7 +128,6 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     }
     else {
       ptr = index(uri, '?');
-      if(ptr = index(uri, '?'));
       if (ptr) {
         strcpy(cgiargs, ptr+1);
         *ptr = '\0';
@@ -163,15 +162,15 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     Munmap(srcp, filesize);
   }
 
-  void_filetype(char *filename, char *filetype)
+  void get_filetype(char *filename, char *filetype)
   {
     if (strstr(filename, ".html"))
       strcpy(filetype, "text/html");
     else if (strstr(filename, ".gif"))
       strcpy(filetype, "image/gif");
-    else if (strstr(filetype, ".png"))
+    else if (strstr(filename, ".png"))
       strcpy(filetype, "image/png");
-    else if (strstr(filename, "./jpg"))
+    else if (strstr(filename, ".jpg"))
       strcpy(filetype, "image/jpeg");
     else 
       strcpy(filetype, "text/palin");
