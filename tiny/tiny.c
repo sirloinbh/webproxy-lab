@@ -9,6 +9,11 @@ void serve_dynamic(int fd, char *filename, char *cgiargs, char *method);
 void clienterror(int fd, char *cause, char *errnum, char *shortmsg,
                  char *longmsg);
 
+/* 
+ * main 함수: 웹 서버의 메인 루틴입니다.
+ * argc: 명령줄 인자의 개수입니다.
+ * argv: 명령줄 인자의 배열입니다.
+ */
 int main(int argc, char **argv) {
   int listenfd, connfd;
   char hostname[MAXLINE], port[MAXLINE];
@@ -33,6 +38,10 @@ int main(int argc, char **argv) {
   }
 }
 
+/* 
+ * doit 함수: 클라이언트의 HTTP 요청을 처리합니다.
+ * fd: 클라이언트와 연결된 소켓의 파일 디스크립터입니다.
+ */
 void doit(int fd)
 {
   int is_static;
@@ -74,6 +83,14 @@ void doit(int fd)
   }
 }
 
+/* 
+ * clienterror 함수: 클라이언트에 오류 메시지를 전송합니다.
+ * fd: 클라이언트와 연결된 소켓의 파일 디스크립터입니다.
+ * cause: 오류의 원인입니다.
+ * errnum: HTTP 오류 번호입니다.
+ * shortmsg: 간단한 오류 메시지입니다.
+ * longmsg: 상세한 오류 메시지입니다.
+ */
 void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg)
 {
   char buf[MAXLINE], body[MAXBUF];
@@ -93,6 +110,10 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
   Rio_writen(fd, body, strlen(body));
   }
 
+/* 
+ * read_requesthdrs 함수: HTTP 요청 헤더를 읽습니다.
+ * rp: Rio 구조체의 포인터입니다.
+ */
   void read_requesthdrs(rio_t *rp)
   {
     char buf[MAXLINE];
@@ -105,6 +126,13 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     return;
   }
 
+/* 
+ * parse_uri 함수: URI를 파싱하여 정적/동적 컨텐츠의 경로를 결정합니다.
+ * uri: 요청받은 URI입니다.
+ * filename: 파싱된 파일 이름입니다.
+ * cgiargs: CGI 인자입니다 (동적 컨텐츠의 경우).
+ * 반환 값: 정적 컨텐츠인 경우 1, 동적 컨텐츠인 경우 0입니다.
+ */
   int parse_uri(char *uri, char *filename, char *cgiargs)
   {
     char *ptr;
@@ -131,6 +159,13 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     }
   }
 
+/* 
+ * serve_static 함수: 정적 컨텐츠를 클라이언트에 제공합니다.
+ * fd: 클라이언트와 연결된 소켓의 파일 디스크립터입니다.
+ * filename: 제공할 파일의 이름입니다.
+ * filesize: 파일의 크기입니다.
+ * method: HTTP 요청 메소드입니다.
+ */
   void serve_static(int fd, char *filename, int filesize, char *method)
   {
     int srcfd;
@@ -156,6 +191,11 @@ void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longms
     Munmap(srcp, filesize);
   }
 
+/* 
+ * get_filetype 함수: 파일의 MIME 타입을 결정합니다.
+ * filename: 파일 이름입니다.
+ * filetype: 결정된 파일 타입이 저장될 문자열입니다.
+ */
 void get_filetype(char *filename, char *filetype) {
     if (strstr(filename, ".html"))
         strcpy(filetype, "text/html");
@@ -190,3 +230,8 @@ void get_filetype(char *filename, char *filetype) {
     }
     Wait(NULL);
   }
+
+/*
+ * 위의 함수들은 Tiny 웹 서버의 핵심 기능을 구현합니다. 각 함수는 HTTP 요청을 처리하고, 
+ * URI를 분석하며, 적절한 컨텐츠(정적 또는 동적)를 클라이언트에 제공합니다.
+ */
