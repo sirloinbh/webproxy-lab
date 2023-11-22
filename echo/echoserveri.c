@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     int listenfd, connfd;
     socklen_t clientlen;
-    struct sockaddr_storage clientaddr; /* Enough space for any address */
+    struct sockaddr_storage clientaddr; 
     char client_hostname[MAXLINE], client_port[MAXLINE];
 
     if (argc != 2) {
